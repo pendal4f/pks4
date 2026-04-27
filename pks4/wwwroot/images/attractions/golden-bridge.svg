@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e7f5ff"/>
+  <rect x="0" y="320" width="800" height="130" fill="#d0ebff"/>
+  <path d="M100 310h600v20H100z" fill="#1864ab"/>
+  <path d="M220 310c80-120 280-120 360 0" fill="none" stroke="#1864ab" stroke-width="14"/>
+  <path d="M400 140v170" stroke="#a5d8ff" stroke-width="10"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="44" fill="#0b3558">Золотой мост</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#f8f9fa"/>
+  <rect x="0" y="310" width="800" height="140" fill="#e9ecef"/>
+  <path d="M190 310h420v-140H190z" fill="#343a40"/>
+  <path d="M250 250h90v-60h-90zM370 250h90v-60h-90zM490 250h90v-60h-90z" fill="#adb5bd"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="40" fill="#212529">Третьяковка</text>
+</svg>

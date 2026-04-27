@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e6f4ea"/>
+  <rect x="0" y="305" width="800" height="145" fill="#cdeccd"/>
+
+  <!-- основание -->
+  <rect x="250" y="260" width="300" height="50" fill="#ffffff"/>
+  <rect x="250" y="260" width="300" height="5" fill="#dee2e6"/>
+
+  <!-- центральный купол -->
+  <ellipse cx="400" cy="220" rx="85" ry="50" fill="#1c7ed6"/>
+  <ellipse cx="400" cy="220" rx="85" ry="50" fill="none" stroke="#155b9e" stroke-width="2"/>
+
+  <!-- ✨ золото по центру -->
+  <circle cx="400" cy="205" r="10" fill="#fab005"/>
+  <path d="M400 190
+           C395 200, 395 210, 400 215
+           C405 210, 405 200, 400 190 Z"
+        fill="#ffd43b"/>
+
+  <!-- узор на куполе -->
+  <g stroke="#155b9e" stroke-width="1" fill="none" opacity="0.5">
+    <path d="M350,220 Q400,250 450,220"/>
+    <path d="M340,210 Q400,245 460,210"/>
+    <path d="M335,200 Q400,240 465,200"/>
+  </g>
+
+  <!-- малые купола -->
+  <ellipse cx="300" cy="240" rx="35" ry="22" fill="#339af0"/>
+  <ellipse cx="300" cy="240" rx="35" ry="22" fill="none" stroke="#1c7ed6" stroke-width="1.5"/>
+  <ellipse cx="500" cy="240" rx="35" ry="22" fill="#339af0"/>
+  <ellipse cx="500" cy="240" rx="35" ry="22" fill="none" stroke="#1c7ed6" stroke-width="1.5"/>
+
+  <polygon points="295,218 300,195 305,218" fill="#fab005"/>
+  <polygon points="495,218 500,195 505,218" fill="#fab005"/>
+
+  <!-- арки (входные) -->
+  <path d="M290 260 Q310 230 330 260" fill="#dee2e6" stroke="#adb5bd" stroke-width="1"/>
+  <path d="M370 260 Q400 220 430 260" fill="#dee2e6" stroke="#adb5bd" stroke-width="1"/>
+  <path d="M470 260 Q490 230 510 260" fill="#dee2e6" stroke="#adb5bd" stroke-width="1"/>
+
+  <!-- внутренность арок -->
+  <path d="M295 260 Q310 238 325 260" fill="#adb5bd"/>
+  <path d="M377 260 Q400 228 423 260" fill="#adb5bd"/>
+  <path d="M475 260 Q490 238 505 260" fill="#adb5bd"/>
+
+  <!-- минареты (4 основных) -->
+  <g fill="#ffffff">
+    <rect x="230" y="160" width="18" height="150" stroke="#dee2e6" stroke-width="1"/>
+    <rect x="552" y="160" width="18" height="150" stroke="#dee2e6" stroke-width="1"/>
+    <rect x="330" y="170" width="14" height="140" stroke="#dee2e6" stroke-width="1"/>
+    <rect x="456" y="170" width="14" height="140" stroke="#dee2e6" stroke-width="1"/>
+  </g>
+
+  <!-- балконы минаретов -->
+  <g fill="#dee2e6">
+    <rect x="226" y="200" width="26" height="4"/>
+    <rect x="226" y="240" width="26" height="4"/>
+    <rect x="548" y="200" width="26" height="4"/>
+    <rect x="548" y="240" width="26" height="4"/>
+    <rect x="327" y="210" width="20" height="3"/>
+    <rect x="453" y="210" width="20" height="3"/>
+  </g>
+
+  <!-- шпили -->
+  <g fill="#1864ab">
+    <polygon points="230,160 239,120 248,160"/>
+    <polygon points="552,160 561,120 570,160"/>
+    <polygon points="330,170 337,135 344,170"/>
+    <polygon points="456,170 463,135 470,170"/>
+  </g>
+
+  <!-- полумесяцы -->
+  <g stroke="#fab005" stroke-width="2.5" fill="none">
+    <path d="M236 114 a6 6 0 1 0 2 0"/>
+    <path d="M558 114 a6 6 0 1 0 2 0"/>
+    <path d="M335 128 a4.5 4.5 0 1 0 1.5 0"/>
+    <path d="M461 128 a4.5 4.5 0 1 0 1.5 0"/>
+  </g>
+
+  <!-- окна -->
+  <rect x="310" y="270" width="30" height="35" fill="#adb5bd" rx="3"/>
+  <rect x="310" y="275" width="30" height="5" fill="#868e96"/>
+  <rect x="380" y="270" width="40" height="35" fill="#adb5bd" rx="3"/>
+  <rect x="380" y="275" width="40" height="5" fill="#868e96"/>
+  <rect x="460" y="270" width="30" height="35" fill="#adb5bd" rx="3"/>
+  <rect x="460" y="275" width="30" height="5" fill="#868e96"/>
+  
+  <!-- текст "Казань" -->
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="bold" fill="#1b4332">
+    Казань
+  </text>
+
+  <!-- облака -->
+  <g fill="#ffffff" opacity="0.8">
+    <ellipse cx="550" cy="50" rx="38" ry="16"/>
+    <ellipse cx="575" cy="42" rx="28" ry="13"/>
+    <ellipse cx="528" cy="45" rx="20" ry="10"/>
+  </g>
+</svg>

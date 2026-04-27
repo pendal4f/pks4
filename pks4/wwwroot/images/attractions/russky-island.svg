@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#ebfbee"/>
+  <rect x="0" y="315" width="800" height="135" fill="#d3f9d8"/>
+  <path d="M0 340c140-40 240-40 400 0s260 40 400 0v110H0z" fill="#2f9e44" opacity="0.25"/>
+  <path d="M250 310c35-80 95-120 150-120s115 40 150 120" fill="none" stroke="#2f9e44" stroke-width="14"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="42" fill="#1b4332">Остров Русский</text>
+</svg>

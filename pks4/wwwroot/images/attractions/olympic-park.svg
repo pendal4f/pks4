@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#fff9db"/>
+  <rect x="0" y="305" width="800" height="145" fill="#ffe8a3"/>
+  <path d="M200 310h400v-120H200z" fill="#495057"/>
+  <circle cx="300" cy="250" r="22" fill="#dee2e6"/>
+  <circle cx="350" cy="250" r="22" fill="#dee2e6"/>
+  <circle cx="400" cy="250" r="22" fill="#dee2e6"/>
+  <circle cx="450" cy="250" r="22" fill="#dee2e6"/>
+  <circle cx="500" cy="250" r="22" fill="#dee2e6"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="40" fill="#5c3b00">Олимпийский парк</text>
+</svg>

@@ -1,0 +1,37 @@
+:root {
+    --cover-height: 200px;
+    --app-bg-dark: #3b3b3b;
+}
+
+img.cover {
+    height: var(--cover-height);
+    object-fit: contain;
+    object-position: center;
+    background: #f8f9fa;
+}
+
+[data-bs-theme="dark"] {
+    --bs-body-bg: var(--app-bg-dark);
+    --bs-body-color: #f8f9fa;
+    --bs-secondary-color: rgba(255, 255, 255, 0.75);
+    --bs-tertiary-color: rgba(255, 255, 255, 0.55);
+    --bs-border-color: rgba(255, 255, 255, 0.2);
+    --bs-card-bg: #2f2f2f;
+}
+
+[data-bs-theme="dark"] img.cover {
+    background: #2a2a2a;
+}
+
+[data-bs-theme="dark"] .btn-outline-primary,
+[data-bs-theme="dark"] .btn-outline-secondary {
+    --bs-btn-color: rgba(255, 255, 255, 0.78);
+    --bs-btn-border-color: rgba(255, 255, 255, 0.38);
+    --bs-btn-hover-color: rgba(255, 255, 255, 0.92);
+    --bs-btn-hover-bg: rgba(255, 255, 255, 0.12);
+    --bs-btn-hover-border-color: rgba(255, 255, 255, 0.55);
+    --bs-btn-focus-shadow-rgb: 255, 255, 255;
+    --bs-btn-active-color: rgba(255, 255, 255, 0.95);
+    --bs-btn-active-bg: rgba(255, 255, 255, 0.18);
+    --bs-btn-active-border-color: rgba(255, 255, 255, 0.65);
+}

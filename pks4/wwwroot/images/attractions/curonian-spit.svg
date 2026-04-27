@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e7f5ff"/>
+  <rect x="0" y="310" width="800" height="140" fill="#d0ebff"/>
+  <path d="M0 300c140-70 260-70 400 0s260 70 400 0v150H0z" fill="#74c0fc" opacity="0.35"/>
+  <path d="M0 320c160-90 260-90 400 0s240 90 400 0v130H0z" fill="#f2c94c" opacity="0.75"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="42" fill="#0b3558">Куршская коса</text>
+</svg>

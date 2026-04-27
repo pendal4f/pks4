@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 360">
+  <path d="M30 30h240v150c0 90-55 135-120 150C85 315 30 270 30 180V30z" fill="#0b7285" stroke="#063a44" stroke-width="10"/>
+  <path d="M80 240h140v25H80z" fill="#ffffff" opacity="0.9"/>
+  <path d="M115 120h70l-35 55z" fill="#ffffff" opacity="0.9"/>
+</svg>

@@ -1,0 +1,42 @@
+@model pks4.Models.Attraction
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Model.Name</h1>
+        <div class="text-muted">
+            Город:
+            <a asp-controller="Cities" asp-action="Details" asp-route-id="@Model.CityId">@Model.City.Name</a>
+        </div>
+    </div>
+    <a class="btn btn-outline-primary" asp-controller="Cities" asp-action="Details" asp-route-id="@Model.CityId">← Назад к городу</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <img class="card-img-top cover" src="@(string.IsNullOrWhiteSpace(Model.PhotoPath) ? "/images/placeholder.svg" : Model.PhotoPath)" alt="@Model.Name" />
+            <div class="card-body">
+                <h2 class="h5">Описание / история</h2>
+                <p class="mb-0">@(!string.IsNullOrWhiteSpace(Model.History) ? Model.History : "Нет данных.")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Информация</h2>
+                <dl class="mb-0">
+                    <dt>Часы работы</dt>
+                    <dd>@(!string.IsNullOrWhiteSpace(Model.OpeningHours) ? Model.OpeningHours : "—")</dd>
+                    <dt>Стоимость</dt>
+                    <dd>@(Model.VisitCost is null ? "—" : (Model.VisitCost.Value.ToString("N0") + " ₽"))</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

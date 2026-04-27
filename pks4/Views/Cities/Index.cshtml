@@ -1,0 +1,102 @@
+@model IReadOnlyList<pks4.Models.City>
+
+@{
+    ViewData["Title"] = "Города";
+    var q = (string?)ViewBag.Query;
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Список городов</h1>
+        <div class="text-muted">Выберите город, чтобы посмотреть информацию и достопримечательности.</div>
+    </div>
+
+    <form class="d-flex gap-2" method="get" asp-action="Index">
+        <input id="citySearchInput" class="form-control" type="search" name="q" value="@q" placeholder="Поиск (Москва/мск/спб)..." autocomplete="off" />
+        <button class="btn btn-primary" type="submit">Найти</button>
+        @if (!string.IsNullOrWhiteSpace(q))
+        {
+            <a class="btn btn-outline-primary" asp-action="Index">Сброс</a>
+        }
+    </form>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-warning">Ничего не найдено.</div>
+}
+else
+{
+    <div id="cityCards" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        @foreach (var city in Model)
+        {
+            var historySnippet = string.IsNullOrWhiteSpace(city.History)
+                ? null
+                : (city.History.Length > 140 ? city.History[..140] + "…" : city.History);
+
+            <div class="col">
+                <div class="card h-100 shadow-sm city-card" data-search="@SearchTokens.CitySearchText(city)">
+                    <img class="card-img-top cover" src="@(string.IsNullOrWhiteSpace(city.PhotoPath) ? "/images/placeholder.svg" : city.PhotoPath)" alt="@city.Name" />
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between gap-2">
+                            <h2 class="h5 mb-1">@city.Name</h2>
+                            <span class="badge text-bg-secondary">@city.Region</span>
+                        </div>
+                        <div class="text-muted">Население: @city.Population.ToString("N0")</div>
+                        @if (!string.IsNullOrWhiteSpace(historySnippet))
+                        {
+                            <div class="text-muted small mt-2">@historySnippet</div>
+                        }
+                    </div>
+                    <div class="card-footer border-0 pt-0 pb-3 px-3">
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@city.Id">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts
+{
+    <script>
+        (function () {
+            const input = document.getElementById("citySearchInput");
+            const cards = Array.from(document.querySelectorAll(".city-card"));
+
+            function normalize(text) {
+                if (!text) return "";
+                return text
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[\u2011\u2012\u2013\u2014\-_,.]+/g, " ")
+                    .replace(/\s+/g, " ");
+            }
+
+            function tokenize(text) {
+                const n = normalize(text);
+                if (!n) return [];
+                return n.split(" ").filter(Boolean);
+            }
+
+            function applyFilter() {
+                const tokens = tokenize(input ? input.value : "");
+                for (const card of cards) {
+                    const hay = card.getAttribute("data-search") || "";
+                    const ok = tokens.length === 0 || tokens.every(t => hay.includes(t));
+                    const col = card.closest(".col");
+                    if (col) col.style.display = ok ? "" : "none";
+                }
+            }
+
+            if (input) {
+                let t = null;
+                input.addEventListener("input", function () {
+                    if (t) window.clearTimeout(t);
+                    t = window.setTimeout(applyFilter, 80);
+                });
+                applyFilter();
+            }
+        })();
+    </script>
+}

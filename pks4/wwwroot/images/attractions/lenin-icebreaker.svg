@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e3fafc"/>
+  <rect x="0" y="300" width="800" height="150" fill="#c5f6fa"/>
+  <path d="M160 310h420l60-70H220z" fill="#343a40"/>
+  <rect x="260" y="185" width="220" height="75" fill="#868e96"/>
+  <rect x="300" y="205" width="40" height="25" fill="#e9ecef"/>
+  <rect x="360" y="205" width="40" height="25" fill="#e9ecef"/>
+  <rect x="420" y="205" width="40" height="25" fill="#e9ecef"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="38" fill="#0b3b4a">Ледокол «Ленин»</text>
+</svg>

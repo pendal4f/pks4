@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#f1f3f5"/>
+  <rect x="0" y="305" width="800" height="145" fill="#dee2e6"/>
+  <path d="M220 310h360v-100H220z" fill="#495057"/>
+  <path d="M400 130l-20 80h40z" fill="#ffc078"/>
+  <path d="M390 210h20v100h-20z" fill="#ffc078"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="36" fill="#212529">Петропавловская крепость</text>
+</svg>

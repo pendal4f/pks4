@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#f3f0ff"/>
+  <rect x="0" y="315" width="800" height="135" fill="#e5dbff"/>
+  <path d="M210 320h380v-140H210z" fill="#5f3dc4"/>
+  <path d="M210 180h380l-60-60H270z" fill="#4c2ea3"/>
+  <path d="M265 270h80v-55h-80zM365 270h80v-55h-80zM465 270h80v-55h-80z" fill="#d0bfff"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="42" fill="#2b1a66">130‑й квартал</text>
+</svg>

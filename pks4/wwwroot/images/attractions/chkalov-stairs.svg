@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e7f5ff"/>
+  <rect x="0" y="310" width="800" height="140" fill="#d0ebff"/>
+  <path d="M220 310c30-120 90-180 180-180s150 60 180 180" fill="none" stroke="#495057" stroke-width="16"/>
+  <path d="M250 310c25-95 75-140 150-140s125 45 150 140" fill="none" stroke="#adb5bd" stroke-width="12"/>
+  <path d="M120 335h560v18H120z" fill="#495057" opacity="0.8"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="42" fill="#0b3558">Чкаловская лестница</text>
+</svg>

@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e9ecef"/>
+  <rect x="0" y="300" width="800" height="150" fill="#adb5bd"/>
+
+  <!-- кремлёвская стена -->
+  <rect x="160" y="260" width="480" height="60" fill="#9b2226"/>
+  <rect x="160" y="310" width="480" height="10" fill="#6a040f" opacity="0.3"/>
+
+  <!-- зубцы стены -->
+  <g fill="#6a040f">
+    <rect x="170" y="245" width="20" height="15"/>
+    <rect x="210" y="245" width="20" height="15"/>
+    <rect x="250" y="245" width="20" height="15"/>
+    <rect x="290" y="245" width="20" height="15"/>
+    <rect x="330" y="245" width="20" height="15"/>
+    <rect x="370" y="245" width="20" height="15"/>
+    <rect x="410" y="245" width="20" height="15"/>
+    <rect x="450" y="245" width="20" height="15"/>
+    <rect x="490" y="245" width="20" height="15"/>
+    <rect x="530" y="245" width="20" height="15"/>
+    <rect x="570" y="245" width="20" height="15"/>
+    <rect x="610" y="245" width="20" height="15"/>
+  </g>
+
+  <!-- Спасская башня (центр) -->
+  <rect x="380" y="150" width="40" height="110" fill="#9b2226"/>
+  <rect x="372" y="130" width="56" height="25" fill="#6a040f"/>
+
+  <!-- часы -->
+  <circle cx="400" cy="190" r="12" fill="#f8f9fa" stroke="#212529" stroke-width="1.5"/>
+  <circle cx="400" cy="190" r="10" fill="#f8f9fa"/>
+  <line x1="400" y1="190" x2="400" y2="182" stroke="#212529" stroke-width="2"/>
+  <line x1="400" y1="190" x2="406" y2="194" stroke="#212529" stroke-width="2"/>
+
+  <!-- куранты (цифры) -->
+  <text x="397" y="193" font-family="Arial" font-size="5" fill="#212529" text-anchor="middle">XII</text>
+
+  <!-- звезда -->
+  <polygon points="400,105 405,120 420,120 408,130 413,145 400,136 387,145 392,130 380,120 395,120"
+           fill="#ffd43b"/>
+  <polygon points="400,105 405,120 420,120 408,130 413,145 400,136 387,145 392,130 380,120 395,120"
+           fill="none" stroke="#e6b800" stroke-width="1"/>
+
+  <!-- луч от звезды -->
+  <g stroke="#ffd43b" stroke-width="1" opacity="0.5">
+    <line x1="400" y1="95" x2="400" y2="85"/>
+    <line x1="400" y1="155" x2="400" y2="160"/>
+    <line x1="375" y1="125" x2="365" y2="120"/>
+    <line x1="425" y1="125" x2="435" y2="120"/>
+  </g>
+
+  <!-- боковые башни -->
+  <g fill="#9b2226">
+    <rect x="230" y="210" width="30" height="50"/>
+    <rect x="540" y="210" width="30" height="50"/>
+  </g>
+
+  <g fill="#6a040f">
+    <polygon points="230,210 245,180 260,210"/>
+    <polygon points="540,210 555,180 570,210"/>
+  </g>
+
+  <!-- флажки на боковых башнях -->
+  <polygon points="245,180 245,168 255,174" fill="#ffd43b"/>
+  <polygon points="555,180 555,168 545,174" fill="#ffd43b"/>
+
+  <!-- дополнительные малые башни -->
+  <g fill="#9b2226">
+    <rect x="310" y="230" width="20" height="30"/>
+    <rect x="470" y="230" width="20" height="30"/>
+  </g>
+  <g fill="#6a040f">
+    <polygon points="310,230 320,210 330,230"/>
+    <polygon points="470,230 480,210 490,230"/>
+  </g>
+
+  <!-- окна/бойницы в стене -->
+  <rect x="195" y="280" width="8" height="15" fill="#370617"/>
+  <rect x="275" y="280" width="8" height="15" fill="#370617"/>
+  <rect x="345" y="280" width="8" height="15" fill="#370617"/>
+  <rect x="445" y="280" width="8" height="15" fill="#370617"/>
+  <rect x="515" y="280" width="8" height="15" fill="#370617"/>
+  <rect x="595" y="280" width="8" height="15" fill="#370617"/>
+
+  <!-- ворота в стене -->
+  <rect x="390" y="280" width="20" height="40" rx="10" fill="#370617"/>
+  <path d="M390,280 Q400,270 410,280" fill="none" stroke="#1a0308" stroke-width="1.5"/>
+
+  <!-- дорожка перед кремлём -->
+  <ellipse cx="400" cy="330" rx="180" ry="15" fill="#ced4da" opacity="0.5"/>
+
+  <!-- главный текст -->
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="bold" fill="#212529">
+    Москва
+  </text>
+  
+  <!-- облака -->
+  <g fill="#ffffff" opacity="0.7">
+    <ellipse cx="550" cy="60" rx="45" ry="22"/>
+    <ellipse cx="580" cy="50" rx="35" ry="18"/>
+    <ellipse cx="520" cy="55" rx="28" ry="16"/>
+  </g>
+  
+  <!-- деревья -->
+  <g fill="#2b8a3e" opacity="0.8">
+    
+    <circle cx="660" cy="288" r="13"/>
+    <circle cx="652" cy="283" r="10"/>
+    <circle cx="668" cy="280" r="9"/>
+  </g>
+  <rect x="658" y="298" width="5" height="10" fill="#5c3e1b"/>
+
+  <!-- купола за стеной (церкви) -->
+  <ellipse cx="290" cy="250" rx="12" ry="10" fill="#ffd43b" opacity="0.6"/>
+  <ellipse cx="340" cy="248" rx="10" ry="8" fill="#ffd43b" opacity="0.6"/>
+  <ellipse cx="460" cy="248" rx="10" ry="8" fill="#ffd43b" opacity="0.6"/>
+  <ellipse cx="510" cy="250" rx="12" ry="10" fill="#ffd43b" opacity="0.6"/>
+</svg>

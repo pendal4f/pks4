@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#f8f9fa"/>
+  <rect x="0" y="305" width="800" height="145" fill="#e9ecef"/>
+
+  <!-- основное здание (кирха / собор) -->
+  <rect x="260" y="220" width="280" height="90" fill="#8b3e2f"/>
+
+  <!-- крыша (серо-зелёная) -->
+  <polygon points="260,220 540,220 500,170 300,170" fill="#6f8f87"/>
+
+  <!-- центральная башня -->
+  <rect x="360" y="140" width="80" height="170" fill="#8b3e2f"/>
+
+  <!-- шпиль -->
+  <polygon points="360,140 400,80 440,140" fill="#5f7f77"/>
+
+  <!-- флюгер на шпиле -->
+  <line x1="400" y1="80" x2="400" y2="65" stroke="#4a6a62" stroke-width="2"/>
+  <polygon points="400,65 408,70 400,75 392,70" fill="#ffd43b"/>
+
+  <!-- часы -->
+  <circle cx="400" cy="200" r="15" fill="#f1e3d3" stroke="#5c2c1e" stroke-width="1.5"/>
+  <line x1="400" y1="200" x2="400" y2="190" stroke="#5c2c1e" stroke-width="2"/>
+  <line x1="400" y1="200" x2="410" y2="200" stroke="#5c2c1e" stroke-width="2"/>
+
+  <!-- окна (более яркие) -->
+  <rect x="300" y="240" width="30" height="50" fill="#f1e3d3"/>
+  <rect x="350" y="240" width="30" height="50" fill="#f1e3d3"/>
+  <rect x="420" y="240" width="30" height="50" fill="#f1e3d3"/>
+  <rect x="470" y="240" width="30" height="50" fill="#f1e3d3"/>
+
+  <!-- перемычки окон -->
+  <g stroke="#5c2c1e" stroke-width="1.5">
+    <line x1="300" y1="265" x2="330" y2="265"/>
+    <line x1="350" y1="265" x2="380" y2="265"/>
+    <line x1="420" y1="265" x2="450" y2="265"/>
+    <line x1="470" y1="265" x2="500" y2="265"/>
+  </g>
+
+  <!-- узкие окна на башне -->
+  <rect x="385" y="150" width="10" height="30" fill="#f1e3d3"/>
+  <rect x="405" y="150" width="10" height="30" fill="#f1e3d3"/>
+
+  <!-- вход -->
+  <rect x="380" y="260" width="40" height="50" fill="#3d1f17"/>
+  <path d="M380,260 Q400,250 420,260" fill="none" stroke="#2a150f" stroke-width="2"/>
+
+  <!-- боковые башни (добавлены) -->
+  <rect x="280" y="190" width="30" height="50" fill="#8b3e2f"/>
+  <polygon points="280,190 295,165 310,190" fill="#6f8f87"/>
+  <rect x="490" y="190" width="30" height="50" fill="#8b3e2f"/>
+  <polygon points="490,190 505,165 520,190" fill="#6f8f87"/>
+
+  <!-- маленькие окна на боковых башнях -->
+  <rect x="290" y="210" width="10" height="15" fill="#f1e3d3"/>
+  <rect x="500" y="210" width="10" height="15" fill="#f1e3d3"/>
+
+  <!-- текст (с подзаголовком) -->
+  <text x="40" y="65" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="bold" fill="#212529">
+    Кафедральный собор
+  </text>
+
+  <!-- волны Балтийского моря -->
+  <g fill="none" stroke="#5f9ea0" stroke-width="2" opacity="0.5">
+    <path d="M0,400 Q40,390 80,400 Q120,410 160,400 Q200,390 240,400 Q280,410 320,400 Q360,390 400,400 Q440,410 480,400 Q520,390 560,400 Q600,410 640,400 Q680,390 720,400 Q760,410 800,400"/>
+    <path d="M0,415 Q50,405 100,415 Q150,425 200,415 Q250,405 300,415 Q350,425 400,415 Q450,405 500,415 Q550,425 600,415 Q650,405 700,415 Q750,425 800,415"/>
+  </g>
+
+  <!-- чайки -->
+  <g fill="none" stroke="#2c3e50" stroke-width="1.5" opacity="0.6">
+    <path d="M620,100 Q625,92 630,100 Q635,92 640,100"/>
+    <path d="M650,85 Q655,77 660,85 Q665,77 670,85"/>
+    <path d="M590,115 Q595,107 600,115 Q605,107 610,115"/>
+  </g>
+
+  <!-- облака -->
+  <g fill="#dee2e6" opacity="0.8">
+    <ellipse cx="500" cy="55" rx="35" ry="16"/>
+    <ellipse cx="525" cy="47" rx="25" ry="13"/>
+    <ellipse cx="478" cy="50" rx="20" ry="11"/>
+  </g>
+
+  <!-- деревья у стен -->
+  <g fill="#5f8b6f" opacity="0.8">
+    <circle cx="250" cy="290" r="12"/>
+    <circle cx="245" cy="285" r="10"/>
+    <circle cx="255" cy="283" r="9"/>
+
+    <circle cx="555" cy="288" r="14"/>
+    <circle cx="548" cy="283" r="11"/>
+    <circle cx="562" cy="280" r="10"/>
+  </g>
+  <rect x="248" y="298" width="6" height="10" fill="#5c3e1b"/>
+  <rect x="553" y="298" width="6" height="10" fill="#5c3e1b"/>
+</svg>

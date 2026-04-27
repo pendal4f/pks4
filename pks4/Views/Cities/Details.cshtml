@@ -1,0 +1,61 @@
+@model pks4.Models.City
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Model.Name</h1>
+        <div class="text-muted">@Model.Region · Население: @Model.Population.ToString("N0")</div>
+    </div>
+    <a class="btn btn-outline-primary" asp-action="Index">← К списку</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <img class="card-img-top cover" src="@(string.IsNullOrWhiteSpace(Model.PhotoPath) ? "/images/placeholder.svg" : Model.PhotoPath)" alt="@Model.Name" />
+            <div class="card-body">
+                <h2 class="h5">История</h2>
+                <p class="mb-0">@(!string.IsNullOrWhiteSpace(Model.History) ? Model.History : "Нет данных.")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Герб</h2>
+                <img class="w-100 rounded border bg-body p-2" src="@(string.IsNullOrWhiteSpace(Model.CoatOfArmsImagePath) ? "/images/placeholder.svg" : Model.CoatOfArmsImagePath)" alt="Герб @Model.Name" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h4 mb-3">Достопримечательности</h2>
+
+@if (Model.Attractions.Count == 0)
+{
+    <div class="alert alert-info">Пока нет достопримечательностей.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        @foreach (var a in Model.Attractions)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img class="card-img-top cover" src="@(string.IsNullOrWhiteSpace(a.PhotoPath) ? "/images/placeholder.svg" : a.PhotoPath)" alt="@a.Name" />
+                    <div class="card-body">
+                        <h3 class="h6 mb-1">@a.Name</h3>
+                        <div class="text-muted small">@(!string.IsNullOrWhiteSpace(a.ShortDescription) ? a.ShortDescription : "—")</div>
+                    </div>
+                    <div class="card-footer border-0 pt-0 pb-3 px-3">
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="Attractions" asp-action="Details" asp-route-id="@a.Id">Открыть</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

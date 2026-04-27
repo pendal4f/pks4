@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e7f5ff"/>
+  <rect x="0" y="300" width="800" height="150" fill="#d0ebff"/>
+  <path d="M160 310h480v-120H160z" fill="#1864ab"/>
+  <path d="M210 260h70v-50h-70zM310 260h70v-50h-70zM410 260h70v-50h-70zM510 260h70v-50h-70z" fill="#a5d8ff"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="44" fill="#0b3558">Эрмитаж</text>
+</svg>

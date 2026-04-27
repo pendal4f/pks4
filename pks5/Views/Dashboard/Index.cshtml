@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Производство";
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Управление производством</h1>
+        <div class="text-muted">Практическое №5 — панели и API.</div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-primary" asp-controller="Orders" asp-action="Index">Заказы</a>
+        <a class="btn btn-outline-primary" asp-controller="Materials" asp-action="Index">Материалы</a>
+        <a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index">Продукты</a>
+        <a class="btn btn-outline-primary" asp-controller="Lines" asp-action="Index">Линии</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">API</h2>
+                <div class="text-muted mb-2">Базовые endpoints по ТЗ:</div>
+                <ul class="mb-0">
+                    <li><code>GET /api/materials?low_stock=true</code></li>
+                    <li><code>POST /api/materials</code></li>
+                    <li><code>PUT /api/materials/{id}/stock</code></li>
+                    <li><code>GET /api/products?category=...</code></li>
+                    <li><code>GET /api/products/{id}/materials</code></li>
+                    <li><code>POST /api/products</code></li>
+                    <li><code>GET /api/lines?available=true</code></li>
+                    <li><code>PUT /api/lines/{id}/status</code></li>
+                    <li><code>GET /api/lines/{id}/schedule</code></li>
+                    <li><code>GET /api/orders?status=active&amp;date=today</code></li>
+                    <li><code>POST /api/orders</code></li>
+                    <li><code>PUT /api/orders/{id}/progress</code></li>
+                    <li><code>GET /api/orders/{id}/details</code></li>
+                    <li><code>POST /api/calculate/production</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Логика</h2>
+                <ul class="mb-0">
+                    <li>Время = (Количество × ВремяНаЕдиницу) / КоэффЭффективности</li>
+                    <li>При создании заказа выполняется проверка материалов</li>
+                    <li>Материалы списываются при создании заказа</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+

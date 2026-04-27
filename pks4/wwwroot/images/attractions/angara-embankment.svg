@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e7f5ff"/>
+  <rect x="0" y="305" width="800" height="145" fill="#d0ebff"/>
+  <path d="M0 300c140-70 260-70 400 0s260 70 400 0v150H0z" fill="#4dabf7" opacity="0.45"/>
+  <path d="M120 330h560v18H120z" fill="#495057" opacity="0.8"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="42" fill="#0b3558">Набережная Ангары</text>
+</svg>

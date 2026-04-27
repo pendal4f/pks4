@@ -1,0 +1,267 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#e8f0f8"/>
+  <rect x="0" y="305" width="800" height="145" fill="#dce5f0"/>
+
+  <!-- тень под дворцом -->
+  <ellipse cx="400" cy="310" rx="220" ry="8" fill="#b0bec5" opacity="0.4"/>
+
+  <!-- Зимний дворец - основное здание -->
+  <rect x="200" y="200" width="400" height="110" fill="#2a7f6e"/>
+
+  <!-- декоративные тяги между этажами -->
+  <rect x="200" y="240" width="400" height="3" fill="#f4d03f" opacity="0.6"/>
+
+  <!-- цоколь -->
+  <rect x="200" y="290" width="400" height="20" fill="#1a5f52"/>
+  <rect x="200" y="290" width="400" height="2" fill="#f4d03f" opacity="0.5"/>
+
+  <!-- карниз -->
+  <rect x="195" y="195" width="410" height="8" fill="#f4d03f"/>
+  <rect x="195" y="195" width="410" height="2" fill="#ffd700" opacity="0.8"/>
+
+  <!-- колонны (центральный ризалит) -->
+  <g fill="#e8dcc8">
+    <rect x="360" y="200" width="10" height="90"/>
+    <rect x="375" y="200" width="10" height="90"/>
+    <rect x="390" y="200" width="10" height="90"/>
+    <rect x="405" y="200" width="10" height="90"/>
+    <rect x="420" y="200" width="10" height="90"/>
+  </g>
+
+  <!-- тени колонн -->
+  <g fill="#c4b89a" opacity="0.5">
+    <rect x="360" y="200" width="3" height="90"/>
+    <rect x="375" y="200" width="3" height="90"/>
+    <rect x="390" y="200" width="3" height="90"/>
+    <rect x="405" y="200" width="3" height="90"/>
+    <rect x="420" y="200" width="3" height="90"/>
+  </g>
+
+  <!-- капители колонн -->
+  <g fill="#f4d03f">
+    <rect x="358" y="200" width="14" height="5"/>
+    <rect x="373" y="200" width="14" height="5"/>
+    <rect x="388" y="200" width="14" height="5"/>
+    <rect x="403" y="200" width="14" height="5"/>
+    <rect x="418" y="200" width="14" height="5"/>
+  </g>
+
+  <!-- базы колонн -->
+  <g fill="#f4d03f">
+    <rect x="358" y="287" width="14" height="3"/>
+    <rect x="373" y="287" width="14" height="3"/>
+    <rect x="388" y="287" width="14" height="3"/>
+    <rect x="403" y="287" width="14" height="3"/>
+    <rect x="418" y="287" width="14" height="3"/>
+  </g>
+
+  <!-- фронтон центральный -->
+  <polygon points="355,200 400,160 445,200" fill="#2a7f6e"/>
+  <polygon points="355,200 400,160 445,200" fill="none" stroke="#f4d03f" stroke-width="2"/>
+
+  <!-- тимпан фронтона -->
+  <polygon points="362,197 400,167 438,197" fill="#236b5c"/>
+
+  <!-- скульптуры на фронтоне -->
+  <g fill="#e8dcc8">
+    <!-- атланты по краям фронтона -->
+    <rect x="358" y="182" width="4" height="18"/>
+    <circle cx="360" cy="180" r="3"/>
+    <rect x="438" y="182" width="4" height="18"/>
+    <circle cx="440" cy="180" r="3"/>
+    <!-- центральная композиция -->
+    <rect x="393" y="168" width="5" height="12"/>
+    <rect x="402" y="168" width="5" height="12"/>
+    <circle cx="395" cy="166" r="3"/>
+    <circle cx="405" cy="166" r="3"/>
+  </g>
+
+  <!-- боковые ризалиты -->
+  <rect x="230" y="210" width="70" height="90" fill="#2a7f6e"/>
+  <rect x="500" y="210" width="70" height="90" fill="#2a7f6e"/>
+
+  <!-- карнизы боковых ризалитов -->
+  <rect x="227" y="207" width="76" height="5" fill="#f4d03f"/>
+  <rect x="497" y="207" width="76" height="5" fill="#f4d03f"/>
+
+  <!-- треугольные фронтоны боковых ризалитов -->
+  <polygon points="245,207 265,185 285,207" fill="#2a7f6e"/>
+  <polygon points="245,207 265,185 285,207" fill="none" stroke="#f4d03f" stroke-width="1.5"/>
+  <polygon points="515,207 535,185 555,207" fill="#2a7f6e"/>
+  <polygon points="515,207 535,185 555,207" fill="none" stroke="#f4d03f" stroke-width="1.5"/>
+
+  <!-- колонны боковых ризалитов -->
+  <g fill="#e8dcc8">
+    <rect x="245" y="210" width="8" height="80"/>
+    <rect x="258" y="210" width="8" height="80"/>
+    <rect x="271" y="210" width="8" height="80"/>
+
+    <rect x="515" y="210" width="8" height="80"/>
+    <rect x="528" y="210" width="8" height="80"/>
+    <rect x="541" y="210" width="8" height="80"/>
+  </g>
+
+  <!-- капители боковых колонн -->
+  <g fill="#f4d03f">
+    <rect x="244" y="210" width="11" height="4"/>
+    <rect x="257" y="210" width="11" height="4"/>
+    <rect x="270" y="210" width="11" height="4"/>
+    <rect x="514" y="210" width="11" height="4"/>
+    <rect x="527" y="210" width="11" height="4"/>
+    <rect x="540" y="210" width="11" height="4"/>
+  </g>
+
+  <!-- окна первого этажа (с наличниками) -->
+  <g>
+    <!-- наличники -->
+    <g fill="none" stroke="#f4d03f" stroke-width="1">
+      <rect x="212" y="248" width="26" height="40" rx="3"/>
+      <rect x="242" y="248" width="26" height="40" rx="3"/>
+      <rect x="307" y="248" width="26" height="40" rx="3"/>
+      <rect x="337" y="248" width="26" height="40" rx="3"/>
+      <rect x="437" y="248" width="26" height="40" rx="3"/>
+      <rect x="467" y="248" width="26" height="40" rx="3"/>
+      <rect x="532" y="248" width="26" height="40" rx="3"/>
+      <rect x="562" y="248" width="26" height="40" rx="3"/>
+    </g>
+    <!-- сами окна -->
+    <g fill="#1a3a4a">
+      <rect x="215" y="251" width="20" height="35" rx="2"/>
+      <rect x="245" y="251" width="20" height="35" rx="2"/>
+      <rect x="310" y="251" width="20" height="35" rx="2"/>
+      <rect x="340" y="251" width="20" height="35" rx="2"/>
+      <rect x="440" y="251" width="20" height="35" rx="2"/>
+      <rect x="470" y="251" width="20" height="35" rx="2"/>
+      <rect x="535" y="251" width="20" height="35" rx="2"/>
+      <rect x="565" y="251" width="20" height="35" rx="2"/>
+    </g>
+  </g>
+
+  <!-- окна второго этажа (высокие, арочные) -->
+  <g>
+    <!-- наличники -->
+    <g fill="none" stroke="#f4d03f" stroke-width="1">
+      <path d="M209,214 L209,240 Q217,248 225,240 L225,214"/>
+      <path d="M239,214 L239,240 Q247,248 255,240 L255,214"/>
+      <path d="M304,214 L304,240 Q312,248 320,240 L320,214"/>
+      <path d="M334,214 L334,240 Q342,248 350,240 L350,214"/>
+      <path d="M434,214 L434,240 Q442,248 450,240 L450,214"/>
+      <path d="M464,214 L464,240 Q472,248 480,240 L480,214"/>
+      <path d="M529,214 L529,240 Q537,248 545,240 L545,214"/>
+      <path d="M559,214 L559,240 Q567,248 575,240 L575,214"/>
+    </g>
+    <!-- сами окна -->
+    <g fill="#a8d8ea">
+      <path d="M212,216 L212,238 Q217,244 222,238 L222,216 Z"/>
+      <path d="M242,216 L242,238 Q247,244 252,238 L252,216 Z"/>
+      <path d="M307,216 L307,238 Q312,244 317,238 L317,216 Z"/>
+      <path d="M337,216 L337,238 Q342,244 347,238 L347,216 Z"/>
+      <path d="M437,216 L437,238 Q442,244 447,238 L447,216 Z"/>
+      <path d="M467,216 L467,238 Q472,244 477,238 L477,216 Z"/>
+      <path d="M532,216 L532,238 Q537,244 542,238 L542,216 Z"/>
+      <path d="M562,216 L562,238 Q567,244 572,238 L572,216 Z"/>
+    </g>
+  </g>
+
+  <!-- Иорданская лестница (центральный вход) -->
+  <rect x="380" y="258" width="40" height="42" fill="#1a3a4a"/>
+  <path d="M380,258 Q400,242 420,258" fill="none" stroke="#f4d03f" stroke-width="2"/>
+
+  <!-- двери -->
+  <rect x="387" y="265" width="12" height="30" fill="#0d2a33"/>
+  <rect x="401" y="265" width="12" height="30" fill="#0d2a33"/>
+  <circle cx="397" cy="280" r="1.5" fill="#f4d03f"/>
+  <circle cx="411" cy="280" r="1.5" fill="#f4d03f"/>
+
+  <!-- ступени -->
+  <g fill="#e8dcc8">
+    <rect x="375" y="296" width="50" height="4"/>
+    <rect x="378" y="292" width="44" height="4"/>
+    <rect x="381" y="288" width="38" height="4"/>
+    <rect x="384" y="284" width="32" height="4"/>
+  </g>
+  <!-- боковые ограждения лестницы -->
+  <rect x="375" y="284" width="3" height="26" fill="#f4d03f"/>
+  <rect x="422" y="284" width="3" height="26" fill="#f4d03f"/>
+
+  <!-- балюстрада на крыше -->
+  <g fill="#e8dcc8" opacity="0.8">
+    <rect x="218" y="190" width="6" height="8"/>
+    <rect x="230" y="190" width="6" height="8"/>
+    <rect x="242" y="190" width="6" height="8"/>
+    <rect x="254" y="190" width="6" height="8"/>
+    <rect x="266" y="190" width="6" height="8"/>
+    <rect x="278" y="190" width="6" height="8"/>
+    <rect x="516" y="190" width="6" height="8"/>
+    <rect x="528" y="190" width="6" height="8"/>
+    <rect x="540" y="190" width="6" height="8"/>
+    <rect x="552" y="190" width="6" height="8"/>
+    <rect x="564" y="190" width="6" height="8"/>
+    <rect x="576" y="190" width="6" height="8"/>
+  </g>
+
+  <!-- Нева (вода перед дворцом) -->
+  <g fill="none" stroke="#5f9ea0" stroke-width="2" opacity="0.4">
+    <path d="M0,390 Q100,378 200,388 Q300,398 400,388 Q500,378 600,388 Q700,398 800,388"/>
+    <path d="M0,402 Q150,390 300,402 Q450,414 600,402 Q700,392 800,402"/>
+    <path d="M0,414 Q120,404 240,414 Q360,424 480,414 Q600,404 720,414 Q760,410 800,414" opacity="0.3"/>
+  </g>
+
+  <!-- Дворцовая набережная -->
+  <rect x="0" y="368" width="800" height="8" fill="#8b9a6e" opacity="0.6"/>
+  <rect x="0" y="368" width="800" height="2" fill="#6b7a4e" opacity="0.5"/>
+
+  <!-- фонари -->
+  <g>
+    <!-- левый фонарь -->
+    <rect x="193" y="255" width="5" height="40" fill="#212529"/>
+    <rect x="188" y="252" width="15" height="5" fill="#212529"/>
+    <circle cx="195" cy="250" r="5" fill="#ffd43b"/>
+    <circle cx="195" cy="250" r="3" fill="#fff3bf"/>
+    <path d="M190,245 L195,235 L200,245" fill="#212529"/>
+
+    <!-- правый фонарь -->
+    <rect x="602" y="255" width="5" height="40" fill="#212529"/>
+    <rect x="597" y="252" width="15" height="5" fill="#212529"/>
+    <circle cx="605" cy="250" r="5" fill="#ffd43b"/>
+    <circle cx="605" cy="250" r="3" fill="#fff3bf"/>
+    <path d="M600,245 L605,235 L610,245" fill="#212529"/>
+  </g>
+
+  <!-- текст -->
+  <text x="40" y="65" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="bold" fill="#1a3a4a">
+    Санкт-Петербург
+  </text>
+  
+  <!-- облака (петербургское небо) -->
+  <g fill="#ffffff" opacity="0.75">
+    <ellipse cx="120" cy="120" rx="50" ry="20"/>
+    <ellipse cx="160" cy="108" rx="32" ry="15"/>
+    <ellipse cx="88" cy="113" rx="24" ry="13"/>
+
+    <ellipse cx="580" cy="100" rx="42" ry="18"/>
+    <ellipse cx="615" cy="90" rx="30" ry="14"/>
+    <ellipse cx="552" cy="94" rx="22" ry="12"/>
+  </g>
+
+  <!-- птицы -->
+  <g fill="none" stroke="#2c3e50" stroke-width="1.2" opacity="0.4">
+    <path d="M280,140 Q285,132 290,140 Q295,132 300,140"/>
+    <path d="M310,128 Q315,120 320,128 Q325,120 330,128"/>
+    <path d="M295,155 Q300,147 305,155 Q310,147 315,155"/>
+  </g>
+
+  <!-- деревья (Летний сад) -->
+  <g fill="#4a8c5e" opacity="0.75">
+    <circle cx="160" cy="290" r="14"/>
+    <circle cx="153" cy="283" r="11"/>
+    <circle cx="167" cy="280" r="10"/>
+    <rect x="158" y="300" width="5" height="12" fill="#5c3e1b"/>
+
+    <circle cx="640" cy="287" r="15"/>
+    <circle cx="632" cy="280" r="12"/>
+    <circle cx="649" cy="276" r="10"/>
+    <rect x="638" y="298" width="5" height="12" fill="#5c3e1b"/>
+  </g>
+
+</svg>

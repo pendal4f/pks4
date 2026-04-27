@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#ebfbee"/>
+  <rect x="0" y="305" width="800" height="145" fill="#d3f9d8"/>
+  <path d="M200 310h400v-120H200z" fill="#2f9e44"/>
+  <path d="M260 260h80v-70h-80zM460 260h80v-70h-80z" fill="#b2f2bb"/>
+  <text x="40" y="70" font-family="Segoe UI, Arial, sans-serif" font-size="42" fill="#1b4332">Казанский кремль</text>
+</svg>
