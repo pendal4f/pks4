@@ -1,0 +1,240 @@
+@model IReadOnlyList<pks5.Models.Product>
+
+@{
+    ViewData["Title"] = "Продукты";
+    var categories = (IReadOnlyList<string>?)ViewBag.Categories ?? Array.Empty<string>();
+    var category = (string?)ViewBag.Category;
+    var q = (string?)ViewBag.Query;
+    var dialog = (string?)TempData["Dialog"];
+    var productsForMismatchJson = (string?)ViewBag.ProductsForMismatchJson ?? "[]";
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Продукты</h1>
+        <div class="text-muted">Фильтр по категории и поиск.</div>
+    </div>
+
+    <form class="d-flex gap-2" method="get" asp-action="Index">
+        <select class="form-select" name="category" style="min-width: 220px;">
+            <option value="">Все категории</option>
+            @foreach (var c in categories)
+            {
+                <option value="@c" selected="@(c == category)">@c</option>
+            }
+        </select>
+        <input class="form-control" type="search" name="q" value="@q" placeholder="Поиск продукта..." />
+        <button class="btn btn-primary" type="submit">Найти</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Сброс</a>
+    </form>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(dialog))
+{
+    <div class="alert alert-warning" role="alert">@dialog</div>
+}
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Категория</th>
+                        <th class="text-end">Время (мин/шт)</th>
+                        <th class="text-end">Мин. запас</th>
+                        <th class="text-end">Материалы</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@p.Name</td>
+                            <td>@(p.Category ?? "—")</td>
+                            <td class="text-end">@p.ProductionTimePerUnit</td>
+                            <td class="text-end">@p.MinimalStock</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary" asp-action="EditMaterials" asp-route-id="@p.Id">Настроить</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Добавить продукт</h2>
+                <form id="createProductForm" asp-action="Create" method="post" class="vstack gap-2">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control" name="name" placeholder="Название" />
+                    <input class="form-control" name="category" placeholder="Категория" />
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <input class="form-control" name="productionTimePerUnit" type="number" min="1" value="10" placeholder="Мин/шт" />
+                        </div>
+                        <div class="col-6">
+                            <input class="form-control" name="minimalStock" type="number" min="0" value="0" placeholder="Мин. запас" />
+                        </div>
+                    </div>
+                    <textarea class="form-control" name="description" rows="2" placeholder="Описание (необязательно)"></textarea>
+                    <textarea class="form-control" name="specificationsJson" rows="2" placeholder="Specifications JSON (необязательно)"></textarea>
+                    <button class="btn btn-primary" type="submit">Добавить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="productMismatchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Совпадение названия продукта</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    Продукт <span class="fw-semibold" id="pmName"></span> уже существует.
+                </div>
+                <div class="text-muted mb-2">
+                    Категория: было <span class="fw-semibold" id="pmExistingCategory"></span>, вы ввели <span class="fw-semibold" id="pmNewCategory"></span>.
+                </div>
+                <div class="text-muted mb-2">
+                    Время: было <span class="fw-semibold" id="pmExistingTime"></span>, вы ввели <span class="fw-semibold" id="pmNewTime"></span> (мин/шт).
+                </div>
+                <div class="text-muted">
+                    Минимальный запас: было <span class="fw-semibold" id="pmExistingMin"></span>, вы ввели <span class="fw-semibold" id="pmNewMin"></span>.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="pmUpdateExistingBtn" class="btn btn-secondary">Обновить существующий</button>
+                <button type="button" id="pmCreateSeparateBtn" class="btn btn-primary">Да, создать отдельно</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="updateExistingProductForm" asp-action="UpdateExisting" method="post" class="d-none">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="existingId" id="pmExistingIdInput" />
+    <input type="hidden" name="productionTimePerUnit" id="pmTimeInput" />
+    <input type="hidden" name="category" id="pmCategoryInput" />
+    <input type="hidden" name="minimalStock" id="pmMinInput" />
+    <input type="hidden" name="description" id="pmDescInput" />
+    <input type="hidden" name="specificationsJson" id="pmSpecsInput" />
+</form>
+
+<form id="createForceProductForm" asp-action="CreateForce" method="post" class="d-none">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="name" id="pmNameInput" />
+    <input type="hidden" name="productionTimePerUnit" id="pmTimeInput2" />
+    <input type="hidden" name="category" id="pmCategoryInput2" />
+    <input type="hidden" name="minimalStock" id="pmMinInput2" />
+    <input type="hidden" name="description" id="pmDescInput2" />
+    <input type="hidden" name="specificationsJson" id="pmSpecsInput2" />
+</form>
+
+@section Scripts
+{
+    <script>
+        (function () {
+            const form = document.getElementById("createProductForm");
+            if (!form) return;
+
+            // Берём полный список товаров (без фильтров), чтобы проверка совпадения работала всегда.
+            const products = @Html.Raw(productsForMismatchJson);
+
+            function norm(s) { return (s || "").trim().toLowerCase(); }
+
+            const modalEl = document.getElementById("productMismatchModal");
+            const nameEl = document.getElementById("pmName");
+            const exCatEl = document.getElementById("pmExistingCategory");
+            const newCatEl = document.getElementById("pmNewCategory");
+            const exTimeEl = document.getElementById("pmExistingTime");
+            const newTimeEl = document.getElementById("pmNewTime");
+            const exMinEl = document.getElementById("pmExistingMin");
+            const newMinEl = document.getElementById("pmNewMin");
+            const updateBtn = document.getElementById("pmUpdateExistingBtn");
+            const createBtn = document.getElementById("pmCreateSeparateBtn");
+
+            const updateForm = document.getElementById("updateExistingProductForm");
+            const createForceForm = document.getElementById("createForceProductForm");
+
+            let current = null;
+
+            form.addEventListener("submit", function (e) {
+                const name = norm(form.querySelector('[name="name"]')?.value);
+                const category = (form.querySelector('[name="category"]')?.value || "").trim();
+                const time = (form.querySelector('[name="productionTimePerUnit"]')?.value || "0").trim();
+                const min = (form.querySelector('[name="minimalStock"]')?.value || "0").trim();
+                const desc = (form.querySelector('[name="description"]')?.value || "").trim();
+                const specs = (form.querySelector('[name="specificationsJson"]')?.value || "").trim();
+
+                if (!name) return;
+
+                const sameName = products.filter(p => norm(p.name) === name);
+                if (sameName.length === 0) return;
+
+                const existing = sameName.sort((a, b) => a.id - b.id)[0];
+
+                const sameCategory = norm(existing.category || "") === norm(category || "");
+                const sameTime = String(existing.time) === String(time);
+
+                if (sameCategory && sameTime) return; // server will "merge" (update min/desc/specs)
+
+                e.preventDefault();
+
+                current = { existing, name: (form.querySelector('[name="name"]')?.value || "").trim(), category, time, min, desc, specs };
+
+                if (nameEl) nameEl.textContent = existing.name;
+                if (exCatEl) exCatEl.textContent = existing.category || "—";
+                if (newCatEl) newCatEl.textContent = category || "—";
+                if (exTimeEl) exTimeEl.textContent = String(existing.time);
+                if (newTimeEl) newTimeEl.textContent = String(time);
+                if (exMinEl) exMinEl.textContent = String(existing.min);
+                if (newMinEl) newMinEl.textContent = String(min);
+
+                if (typeof bootstrap === "undefined") {
+                    const ok = confirm(`Продукт "${existing.name}" уже существует. OK = обновить существующий, Cancel = создать отдельно.`);
+                    if (ok) submitUpdate();
+                    else submitCreate();
+                    return;
+                }
+
+                new bootstrap.Modal(modalEl).show();
+            });
+
+            function submitUpdate() {
+                if (!current || !updateForm) return;
+                document.getElementById("pmExistingIdInput").value = String(current.existing.id);
+                document.getElementById("pmTimeInput").value = current.time;
+                document.getElementById("pmCategoryInput").value = current.category;
+                document.getElementById("pmMinInput").value = current.min;
+                document.getElementById("pmDescInput").value = current.desc;
+                document.getElementById("pmSpecsInput").value = current.specs;
+                updateForm.submit();
+            }
+
+            function submitCreate() {
+                if (!current || !createForceForm) return;
+                document.getElementById("pmNameInput").value = current.name;
+                document.getElementById("pmTimeInput2").value = current.time;
+                document.getElementById("pmCategoryInput2").value = current.category;
+                document.getElementById("pmMinInput2").value = current.min;
+                document.getElementById("pmDescInput2").value = current.desc;
+                document.getElementById("pmSpecsInput2").value = current.specs;
+                createForceForm.submit();
+            }
+
+            if (updateBtn) updateBtn.addEventListener("click", submitUpdate);
+            if (createBtn) createBtn.addEventListener("click", submitCreate);
+        })();
+    </script>
+}

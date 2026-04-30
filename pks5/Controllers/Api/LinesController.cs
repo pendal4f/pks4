@@ -28,6 +28,7 @@ public sealed class LinesController(AppDbContext db) : ControllerBase
     public sealed record UpdateStatusRequest(string Status);
 
     [HttpPut("{id:int}/status")]
+    [Consumes("application/json")]
     public async Task<ActionResult<LineDto>> UpdateStatus(int id, [FromBody] UpdateStatusRequest request)
     {
         var line = await db.ProductionLines.FirstOrDefaultAsync(l => l.Id == id);
@@ -37,11 +38,46 @@ public sealed class LinesController(AppDbContext db) : ControllerBase
         if (status is not (LineStatus.Active or LineStatus.Stopped))
             return BadRequest("status must be 'Active' or 'Stopped'");
 
+        var prevStatus = line.Status;
         line.Status = status;
+
+        // Если линия остановлена — отменяем активные заказы и возвращаем неиспользованные материалы.
+        if (prevStatus != LineStatus.Stopped && line.Status == LineStatus.Stopped)
+        {
+            var orders = await db.WorkOrders
+                .Include(o => o.Product)
+                .ThenInclude(p => p.ProductMaterials)
+                .ThenInclude(pm => pm.Material)
+                .Where(o =>
+                    o.ProductionLineId == line.Id &&
+                    (o.Status == WorkOrderStatus.Pending || o.Status == WorkOrderStatus.InProgress))
+                .ToListAsync();
+
+            foreach (var o in orders)
+            {
+                var progress = Math.Clamp(o.ProgressPercent, 0m, 100m);
+                var remainingFactor = Math.Clamp(1m - (progress / 100m), 0m, 1m);
+                if (remainingFactor > 0)
+                {
+                    foreach (var pm in o.Product.ProductMaterials)
+                        pm.Material.Quantity += pm.QuantityNeeded * o.Quantity * remainingFactor;
+                }
+
+                o.Status = WorkOrderStatus.Cancelled;
+            }
+
+            line.CurrentWorkOrderId = null;
+        }
+
         await db.SaveChangesAsync();
 
         return new LineDto(line.Id, line.Name, line.Status, line.EfficiencyFactor, line.CurrentWorkOrderId);
     }
+
+    [HttpPut("{id:int}/status")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public Task<ActionResult<LineDto>> UpdateStatusForm(int id, [FromForm] UpdateStatusRequest request)
+        => UpdateStatus(id, request);
 
     [HttpGet("{id:int}/schedule")]
     public async Task<ActionResult<List<LineScheduleDto>>> GetSchedule(int id)
@@ -63,4 +99,3 @@ public sealed class LinesController(AppDbContext db) : ControllerBase
     public sealed record LineDto(int Id, string Name, string Status, decimal EfficiencyFactor, int? CurrentWorkOrderId);
     public sealed record LineScheduleDto(int Id, string ProductName, int Quantity, DateTime StartDate, DateTime EstimatedEndDate, string Status, decimal ProgressPercent);
 }
-

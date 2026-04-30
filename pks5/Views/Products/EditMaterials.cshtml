@@ -1,0 +1,56 @@
+@model pks5.Controllers.ProductsController.EditProductMaterialsVm
+
+@{
+    ViewData["Title"] = "Материалы продукта";
+    var existing = Model.Product.ProductMaterials.ToDictionary(pm => pm.MaterialId, pm => pm.QuantityNeeded);
+    var dialog = (string?)TempData["Dialog"];
+}
+
+@if (!string.IsNullOrWhiteSpace(dialog))
+{
+    <div class="alert alert-warning" role="alert">@dialog</div>
+}
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+    <div>
+        <h1 class="h4 mb-1">@Model.Product.Name</h1>
+        <div class="text-muted">Привязка материалов и норм расхода на 1 единицу.</div>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">← К продуктам</a>
+</div>
+
+<form asp-action="SaveMaterials" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Product.Id" />
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Материал</th>
+                    <th>Ед.</th>
+                    <th class="text-end" style="width: 220px;">Кол-во на 1 шт</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var m in Model.Materials)
+                {
+                    var value = existing.TryGetValue(m.Id, out var qty) ? qty : 0;
+                    <tr>
+                        <td>@m.Name</td>
+                        <td>@m.UnitOfMeasure</td>
+                        <td class="text-end">
+                            <input class="form-control text-end" type="number" step="0.001"
+                                   name="qtyNeeded[@m.Id]" value="@value.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-body border-top d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+        </div>
+    </div>
+</form>

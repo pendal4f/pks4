@@ -14,6 +14,7 @@
         "outputPath": "C:\\Users\\User\\RiderProjects\\pks4\\pks4\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
+          "C:\\Users\\User\\RiderProjects\\pks4\\NuGet.Config",
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [

@@ -13,6 +13,7 @@ public sealed class CalculateController(AppDbContext db) : ControllerBase
     public sealed record ProductionResponse(int Minutes);
 
     [HttpPost("production")]
+    [Consumes("application/json")]
     public async Task<ActionResult<ProductionResponse>> Production([FromBody] ProductionRequest request)
     {
         if (request.Quantity <= 0)
@@ -24,5 +25,9 @@ public sealed class CalculateController(AppDbContext db) : ControllerBase
         var minutes = ProductionCalculator.CalculateProductionMinutes(request.Quantity, product.ProductionTimePerUnit, 1.0m);
         return new ProductionResponse(minutes);
     }
-}
 
+    [HttpPost("production")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public Task<ActionResult<ProductionResponse>> ProductionForm([FromForm] ProductionRequest request)
+        => Production(request);
+}

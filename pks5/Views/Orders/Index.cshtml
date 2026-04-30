@@ -1,0 +1,165 @@
+@model IReadOnlyList<pks5.Models.WorkOrder>
+
+@{
+    ViewData["Title"] = "Заказы";
+    var status = (string?)ViewBag.Status;
+    var dialog = (string?)TempData["Dialog"];
+    var products = (IReadOnlyList<string>?)ViewBag.Products ?? Array.Empty<string>();
+}
+
+@if (!string.IsNullOrWhiteSpace(dialog))
+{
+    <div class="alert alert-warning" role="alert" id="dialogMessage">@dialog</div>
+    <script>
+        (function () {
+            const el = document.getElementById("dialogMessage");
+            if (el) window.setTimeout(() => alert(el.textContent || ""), 50);
+        })();
+    </script>
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Заказы</h1>
+        <div class="text-muted">Создание заказа и управление статусом.</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-outline-primary" asp-action="Index">Все</a>
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-status="Pending">Pending</a>
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-status="InProgress">InProgress</a>
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-status="Completed">Completed</a>
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-status="Cancelled">Cancelled</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Продукт</th>
+                        <th class="text-end">Кол-во</th>
+                        <th>Статус</th>
+                        <th>Срок</th>
+                        <th class="text-end">Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var o in Model)
+                    {
+                        var badge = o.Status switch
+                        {
+                            "Pending" => "text-bg-secondary",
+                            "InProgress" => "text-bg-primary",
+                            "Completed" => "text-bg-success",
+                            "Cancelled" => "text-bg-danger",
+                            _ => "text-bg-secondary"
+                        };
+
+                        <tr>
+                            <td>@o.Id</td>
+                            <td>@o.Product.Name</td>
+                            <td class="text-end">@o.Quantity</td>
+                            <td><span class="badge @badge">@o.Status</span></td>
+                            <td class="small text-muted">
+                                <div>@o.EstimatedEndDate.ToString("dd.MM.yyyy HH:mm")</div>
+                                <div class="progress mt-1" style="height: 6px; max-width: 240px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: @o.ProgressPercent%;"
+                                         aria-valuenow="@o.ProgressPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="small text-muted"><span class="order-progress" data-order-id="@o.Id">@o.ProgressPercent</span>%</div>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    @if (o.Status is "Pending" or "InProgress")
+                                    {
+                                        <form asp-action="Start" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@o.Id" />
+                                            <button class="btn btn-sm btn-outline-primary" type="submit">Запустить</button>
+                                        </form>
+
+                                        <form asp-action="Cancel" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@o.Id" />
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">Отменить</button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Создать заказ</h2>
+                <form asp-action="Create" method="post" class="vstack gap-2">
+                    @Html.AntiForgeryToken()
+
+                    <label class="form-label mb-0">Продукт</label>
+                    <select class="form-select" name="productName" required>
+                        @foreach (var p in products)
+                        {
+                            <option value="@p">@p</option>
+                        }
+                    </select>
+
+                    <label class="form-label mb-0">Quantity</label>
+                    <input class="form-control" name="quantity" type="number" min="1" value="1" />
+
+                    <label class="form-label mb-0">LineId (optional)</label>
+                    <input class="form-control" name="lineId" type="number" min="1" />
+
+                    <button class="btn btn-primary mt-1" type="submit">Создать</button>
+                    <div class="small text-muted">Проверка материалов выполняется при создании.</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        (function () {
+            const els = Array.from(document.querySelectorAll(".order-progress[data-order-id]"));
+            if (els.length === 0) return;
+
+            async function tick() {
+                for (const el of els) {
+                    const id = el.getAttribute("data-order-id");
+                    if (!id) continue;
+                    try {
+                        const res = await fetch(`/api/orders/${id}/details`);
+                        if (!res.ok) continue;
+                        const data = await res.json();
+                        const pct = Math.max(0, Math.min(100, Number(data.progressPercent || 0)));
+                        el.textContent = pct.toFixed(0);
+
+                        const row = el.closest("tr");
+                        const bar = row ? row.querySelector(".progress-bar") : null;
+                        if (bar) bar.style.width = pct + "%";
+
+                        const badge = row ? row.querySelector(".badge") : null;
+                        if (badge && data.status) badge.textContent = data.status;
+                    } catch (e) {
+                        // ignore
+                    }
+                }
+            }
+
+            tick();
+            window.setInterval(tick, 2000);
+        })();
+    </script>
+}

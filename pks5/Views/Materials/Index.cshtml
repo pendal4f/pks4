@@ -1,0 +1,220 @@
+@model IReadOnlyList<pks5.Models.Material>
+
+@{
+    ViewData["Title"] = "Материалы";
+    var lowStock = (bool?)ViewBag.LowStock ?? false;
+    var dialog = (string?)TempData["Dialog"];
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Материалы</h1>
+        <div class="text-muted">Таблица материалов с индикацией низкого запаса.</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-lowStock="false">Все</a>
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-lowStock="true">Низкий запас</a>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(dialog))
+{
+    <div class="alert alert-warning" role="alert">@dialog</div>
+}
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th class="text-end">Количество</th>
+                        <th>Ед.</th>
+                        <th class="text-end">Мин.</th>
+                        <th class="text-end">Пополнить</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var m in Model)
+                    {
+                        var isLow = m.Quantity <= m.MinimalStock;
+                        <tr class="@(isLow ? "low-stock" : "")">
+                            <td>@m.Name</td>
+                            <td class="text-end">@m.Quantity.ToString("0.###")</td>
+                            <td>@m.UnitOfMeasure</td>
+                            <td class="text-end">@m.MinimalStock.ToString("0.###")</td>
+                            <td class="text-end">
+                                <form class="d-inline-flex gap-2" asp-action="Refill" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@m.Id" />
+                                    <input class="form-control form-control-sm" style="max-width: 110px;" type="number" step="0.001" name="amount" value="10" />
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">+</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Добавить материал</h2>
+                <form id="createMaterialForm" asp-action="Create" method="post" class="vstack gap-2">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control" name="name" placeholder="Название" />
+                    <div class="row g-2">
+                        <div class="col-7">
+                            <input class="form-control" type="number" step="0.001" name="quantity" placeholder="Количество" value="0" />
+                        </div>
+                        <div class="col-5">
+                            <input class="form-control" name="unitOfMeasure" placeholder="Ед." value="шт" />
+                        </div>
+                    </div>
+                    <input class="form-control" type="number" step="0.001" name="minimalStock" placeholder="Минимальный запас" value="0" />
+                    <button class="btn btn-primary" type="submit">Добавить</button>
+                    @if (lowStock)
+                    {
+                        <div class="small text-muted">Сейчас включён фильтр “низкий запас”.</div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="unitMismatchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Несовпадение единиц измерения</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    Материал <span class="fw-semibold" id="umName"></span> уже существует в единицах
+                    <span class="fw-semibold" id="umExistingUnit"></span>.
+                </div>
+                <div class="text-muted mb-2">
+                    Вы ввели: <span class="fw-semibold" id="umNewUnit"></span> (единицы отличаются).
+                </div>
+                <div class="text-muted">
+                    Минимальный запас: было <span class="fw-semibold" id="umExistingMin"></span>, вы ввели <span class="fw-semibold" id="umNewMin"></span>.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="umAddToExistingBtn" class="btn btn-secondary"></button>
+                <button type="button" id="umCreateSeparateBtn" class="btn btn-primary">Да, создать отдельно (!это может вызвать ошибку)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="addToExistingForm" asp-action="AddToExisting" method="post" class="d-none">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="existingId" id="umExistingIdInput" />
+    <input type="hidden" name="quantity" id="umQuantityInput" />
+    <input type="hidden" name="minimalStock" id="umMinimalStockInput" />
+</form>
+
+<form id="createForceForm" asp-action="CreateForce" method="post" class="d-none">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="name" id="umNameInput" />
+    <input type="hidden" name="quantity" id="umQuantityInput2" />
+    <input type="hidden" name="unitOfMeasure" id="umUnitInput" />
+    <input type="hidden" name="minimalStock" id="umMinimalStockInput2" />
+</form>
+
+@section Scripts
+{
+    <script>
+        (function () {
+            const form = document.getElementById("createMaterialForm");
+            if (!form) return;
+
+            const materials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                Model.Select(m => new { id = m.Id, name = m.Name, unit = m.UnitOfMeasure, minimalStock = m.MinimalStock }).ToList()
+            ));
+
+            function norm(s) {
+                return (s || "").trim().toLowerCase();
+            }
+
+            const modalEl = document.getElementById("unitMismatchModal");
+            const nameEl = document.getElementById("umName");
+            const existingUnitEl = document.getElementById("umExistingUnit");
+            const newUnitEl = document.getElementById("umNewUnit");
+            const existingMinEl = document.getElementById("umExistingMin");
+            const newMinEl = document.getElementById("umNewMin");
+            const addBtn = document.getElementById("umAddToExistingBtn");
+            const createBtn = document.getElementById("umCreateSeparateBtn");
+
+            const addForm = document.getElementById("addToExistingForm");
+            const createForceForm = document.getElementById("createForceForm");
+
+            let current = null;
+
+            form.addEventListener("submit", function (e) {
+                const name = norm(form.querySelector('[name="name"]')?.value);
+                const unit = norm(form.querySelector('[name="unitOfMeasure"]')?.value);
+                const qty = (form.querySelector('[name="quantity"]')?.value || "0").trim();
+                const minStock = (form.querySelector('[name="minimalStock"]')?.value || "0").trim();
+
+                if (!name || !unit) return;
+
+                const sameName = materials.filter(m => norm(m.name) === name);
+                if (sameName.length === 0) return;
+
+                const sameUnit = sameName.find(m => norm(m.unit) === unit);
+                if (sameUnit) return; // will be summed server-side
+
+                e.preventDefault();
+
+                const existing = sameName[0];
+                current = { name: existing.name, unit, qty, minStock, existingId: existing.id, existingUnit: existing.unit, existingMin: existing.minimalStock };
+
+                if (nameEl) nameEl.textContent = existing.name;
+                if (existingUnitEl) existingUnitEl.textContent = existing.unit;
+                if (newUnitEl) newUnitEl.textContent = unit;
+                if (existingMinEl) existingMinEl.textContent = String(existing.minimalStock);
+                if (newMinEl) newMinEl.textContent = minStock;
+                if (addBtn) addBtn.textContent = `Добавить к существующему (${existing.unit})`;
+
+                if (typeof bootstrap === "undefined") {
+                    const ok = confirm(`Материал "${existing.name}" уже есть в "${existing.unit}".\nOK = добавить к существующему, Cancel = создать отдельно.`);
+                    if (ok) submitAddToExisting();
+                    else submitCreateSeparate();
+                    return;
+                }
+
+                const m = new bootstrap.Modal(modalEl);
+                m.show();
+            });
+
+            function submitAddToExisting() {
+                if (!current || !addForm) return;
+                document.getElementById("umExistingIdInput").value = String(current.existingId);
+                document.getElementById("umQuantityInput").value = current.qty;
+                document.getElementById("umMinimalStockInput").value = current.minStock;
+                addForm.submit();
+            }
+
+            function submitCreateSeparate() {
+                if (!current || !createForceForm) return;
+                document.getElementById("umNameInput").value = current.name;
+                document.getElementById("umQuantityInput2").value = current.qty;
+                document.getElementById("umUnitInput").value = current.unit;
+                document.getElementById("umMinimalStockInput2").value = current.minStock;
+                createForceForm.submit();
+            }
+
+            if (addBtn) addBtn.addEventListener("click", submitAddToExisting);
+            if (createBtn) createBtn.addEventListener("click", submitCreateSeparate);
+        })();
+    </script>
+}

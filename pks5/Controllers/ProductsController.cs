@@ -19,6 +19,22 @@ public sealed class ProductsController(AppDbContext db) : Controller
             query = query.Where(p => p.Name.Contains(q));
 
         var items = await query.OrderBy(p => p.Name).ToListAsync();
+
+        // Для проверки "товар с таким названием уже есть" не используем отфильтрованный список,
+        // иначе модалка не появится при активных фильтрах/поиске.
+        var allForMismatch = await db.Products.AsNoTracking()
+            .OrderBy(p => p.Id)
+            .Select(p => new
+            {
+                id = p.Id,
+                name = p.Name,
+                category = p.Category,
+                time = p.ProductionTimePerUnit,
+                min = p.MinimalStock
+            })
+            .ToListAsync();
+        ViewBag.ProductsForMismatchJson = System.Text.Json.JsonSerializer.Serialize(allForMismatch);
+
         ViewBag.Category = category;
         ViewBag.Query = q;
         ViewBag.Categories = await db.Products.AsNoTracking()
@@ -29,6 +45,143 @@ public sealed class ProductsController(AppDbContext db) : Controller
             .ToListAsync();
 
         return View(items);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(
+        string name,
+        int productionTimePerUnit,
+        string? category,
+        int minimalStock,
+        string? description,
+        string? specificationsJson)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            TempData["Dialog"] = "Название продукта обязательно.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        if (productionTimePerUnit <= 0)
+        {
+            TempData["Dialog"] = "Время производства (мин/шт) должно быть > 0.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        if (minimalStock < 0)
+        {
+            TempData["Dialog"] = "Минимальный запас не может быть отрицательным.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var normalizedName = name.Trim();
+        var normalizedCategory = string.IsNullOrWhiteSpace(category) ? null : category.Trim();
+        // Для кириллицы не полагаемся на SQL lower()/NOCASE.
+        var allNames = await db.Products.AsNoTracking()
+            .OrderBy(p => p.Id)
+            .Select(p => new { p.Id, p.Name })
+            .ToListAsync();
+        var existingId = allNames
+            .Where(p => string.Equals(p.Name, normalizedName, StringComparison.OrdinalIgnoreCase))
+            .Select(p => (int?)p.Id)
+            .FirstOrDefault();
+
+        var existing = existingId is null
+            ? null
+            : await db.Products.OrderBy(p => p.Id).FirstOrDefaultAsync(p => p.Id == existingId.Value);
+
+        if (existing is null)
+        {
+            db.Products.Add(new Product
+            {
+                Name = normalizedName,
+                Category = normalizedCategory,
+                ProductionTimePerUnit = productionTimePerUnit,
+                MinimalStock = minimalStock,
+                Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim(),
+                SpecificationsJson = string.IsNullOrWhiteSpace(specificationsJson) ? null : specificationsJson.Trim()
+            });
+
+            await db.SaveChangesAsync();
+            TempData["Dialog"] = $"Продукт \"{normalizedName}\" добавлен.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var sameCategory = string.Equals(existing.Category ?? string.Empty, normalizedCategory ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+        var sameTime = existing.ProductionTimePerUnit == productionTimePerUnit;
+
+        if (sameCategory && sameTime)
+        {
+            existing.MinimalStock = Math.Max(existing.MinimalStock, minimalStock);
+            if (!string.IsNullOrWhiteSpace(description))
+                existing.Description = description.Trim();
+            if (!string.IsNullOrWhiteSpace(specificationsJson))
+                existing.SpecificationsJson = specificationsJson.Trim();
+
+            await db.SaveChangesAsync();
+            TempData["Dialog"] = $"Продукт \"{existing.Name}\" обновлён (минимальный запас/описание).";
+            return RedirectToAction(nameof(Index));
+        }
+
+        TempData["Dialog"] = $"Продукт \"{normalizedName}\" уже существует с другими параметрами. Выберите действие в окне подтверждения.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateForce(
+        string name,
+        int productionTimePerUnit,
+        string? category,
+        int minimalStock,
+        string? description,
+        string? specificationsJson)
+    {
+        if (string.IsNullOrWhiteSpace(name) || productionTimePerUnit <= 0 || minimalStock < 0)
+            return RedirectToAction(nameof(Index));
+
+        db.Products.Add(new Product
+        {
+            Name = name.Trim(),
+            Category = string.IsNullOrWhiteSpace(category) ? null : category.Trim(),
+            ProductionTimePerUnit = productionTimePerUnit,
+            MinimalStock = minimalStock,
+            Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim(),
+            SpecificationsJson = string.IsNullOrWhiteSpace(specificationsJson) ? null : specificationsJson.Trim()
+        });
+
+        await db.SaveChangesAsync();
+        TempData["Dialog"] = $"Продукт \"{name.Trim()}\" добавлен отдельно.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateExisting(
+        int existingId,
+        int productionTimePerUnit,
+        string? category,
+        int minimalStock,
+        string? description,
+        string? specificationsJson)
+    {
+        if (existingId <= 0 || productionTimePerUnit <= 0 || minimalStock < 0)
+            return RedirectToAction(nameof(Index));
+
+        var existing = await db.Products.FirstOrDefaultAsync(p => p.Id == existingId);
+        if (existing is null)
+            return RedirectToAction(nameof(Index));
+
+        existing.Category = string.IsNullOrWhiteSpace(category) ? null : category.Trim();
+        existing.ProductionTimePerUnit = productionTimePerUnit;
+        existing.MinimalStock = minimalStock;
+        existing.Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+        existing.SpecificationsJson = string.IsNullOrWhiteSpace(specificationsJson) ? null : specificationsJson.Trim();
+
+        await db.SaveChangesAsync();
+        TempData["Dialog"] = $"Продукт \"{existing.Name}\" обновлён.";
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
@@ -47,7 +200,7 @@ public sealed class ProductsController(AppDbContext db) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SaveMaterials(int id, Dictionary<int, decimal> qtyNeeded)
+    public async Task<IActionResult> SaveMaterials(int id, Dictionary<int, string> qtyNeeded)
     {
         var product = await db.Products
             .Include(p => p.ProductMaterials)
@@ -55,10 +208,39 @@ public sealed class ProductsController(AppDbContext db) : Controller
 
         if (product is null) return NotFound();
 
+        if (!ModelState.IsValid)
+        {
+            TempData["Dialog"] = "Не удалось сохранить материалы: проверьте введённые значения (используйте число, например 1 или 1.5).";
+            return RedirectToAction(nameof(EditMaterials), new { id });
+        }
+
+        if (qtyNeeded.Count == 0)
+        {
+            TempData["Dialog"] = "Не удалось сохранить материалы: форма не передала значения.";
+            return RedirectToAction(nameof(EditMaterials), new { id });
+        }
+
+        static bool TryParseDecimal(string? s, out decimal value)
+        {
+            value = 0;
+            if (string.IsNullOrWhiteSpace(s))
+                return true;
+
+            s = s.Trim();
+            return decimal.TryParse(s, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value)
+                   || decimal.TryParse(s, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.GetCultureInfo("ru-RU"), out value);
+        }
+
         var existing = product.ProductMaterials.ToDictionary(pm => pm.MaterialId, pm => pm);
 
-        foreach (var (materialId, qty) in qtyNeeded)
+        foreach (var (materialId, qtyStr) in qtyNeeded)
         {
+            if (!TryParseDecimal(qtyStr, out var qty))
+            {
+                TempData["Dialog"] = "Не удалось сохранить материалы: одно из значений не число. Используйте формат 1.5 (или 1,5).";
+                return RedirectToAction(nameof(EditMaterials), new { id });
+            }
+
             if (qty <= 0)
                 continue;
 
@@ -79,7 +261,14 @@ public sealed class ProductsController(AppDbContext db) : Controller
 
         // Remove zeroed / missing
         var toRemove = product.ProductMaterials
-            .Where(pm => !qtyNeeded.TryGetValue(pm.MaterialId, out var qty) || qty <= 0)
+            .Where(pm =>
+            {
+                if (!qtyNeeded.TryGetValue(pm.MaterialId, out var qtyStr))
+                    return true;
+                if (!TryParseDecimal(qtyStr, out var qty))
+                    return false; // keep on parse errors
+                return qty <= 0;
+            })
             .ToList();
         db.ProductMaterials.RemoveRange(toRemove);
 
@@ -89,4 +278,3 @@ public sealed class ProductsController(AppDbContext db) : Controller
 
     public sealed record EditProductMaterialsVm(Product Product, IReadOnlyList<Material> Materials);
 }
-

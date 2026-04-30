@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using pks5.Data;
 using pks5.Models;
 using pks5.Services;
+using System.Text.Json.Serialization;
 
 namespace pks5.Controllers.Api;
 
@@ -10,11 +11,86 @@ namespace pks5.Controllers.Api;
 [Route("api/orders")]
 public sealed class OrdersController(AppDbContext db) : ControllerBase
 {
+    private async Task UpdateOrderProgressAsync()
+    {
+        var now = DateTime.Now;
+
+        // Если линия остановлена во время выполнения заказа — отменяем заказ и возвращаем неиспользованные материалы.
+        var stoppedLineOrders = await db.WorkOrders
+            .Include(o => o.Product)
+            .ThenInclude(p => p.ProductMaterials)
+            .ThenInclude(pm => pm.Material)
+            .Include(o => o.ProductionLine)
+            .Where(o =>
+                o.Status == WorkOrderStatus.InProgress &&
+                o.ProductionLineId != null &&
+                o.ProductionLine != null &&
+                o.ProductionLine.Status == LineStatus.Stopped)
+            .ToListAsync();
+
+        if (stoppedLineOrders.Count > 0)
+        {
+            foreach (var o in stoppedLineOrders)
+            {
+                var progress = Math.Clamp(o.ProgressPercent, 0m, 100m);
+                var remainingFactor = Math.Clamp(1m - (progress / 100m), 0m, 1m);
+                if (remainingFactor > 0)
+                {
+                    foreach (var pm in o.Product.ProductMaterials)
+                        pm.Material.Quantity += pm.QuantityNeeded * o.Quantity * remainingFactor;
+                }
+
+                o.Status = WorkOrderStatus.Cancelled;
+                if (o.ProductionLine?.CurrentWorkOrderId == o.Id)
+                    o.ProductionLine.CurrentWorkOrderId = null;
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+        var inProgress = await db.WorkOrders
+            .Include(o => o.ProductionLine)
+            .Where(o => o.Status == WorkOrderStatus.InProgress)
+            .ToListAsync();
+
+        var changed = false;
+        foreach (var o in inProgress)
+        {
+            var total = (o.EstimatedEndDate - o.StartDate).TotalSeconds;
+            if (total > 0)
+            {
+                var elapsed = (now - o.StartDate).TotalSeconds;
+                var pct = (decimal)(elapsed / total) * 100m;
+                pct = Math.Clamp(pct, 0m, 100m);
+                pct = Math.Round(pct, 3);
+                if (pct > o.ProgressPercent)
+                {
+                    o.ProgressPercent = pct;
+                    changed = true;
+                }
+            }
+
+            if (now >= o.EstimatedEndDate)
+            {
+                o.ProgressPercent = 100;
+                o.Status = WorkOrderStatus.Completed;
+                if (o.ProductionLine?.CurrentWorkOrderId == o.Id)
+                    o.ProductionLine.CurrentWorkOrderId = null;
+                changed = true;
+            }
+        }
+
+        if (changed)
+            await db.SaveChangesAsync();
+    }
+
     [HttpGet]
     public async Task<ActionResult<List<OrderDto>>> Get(
         [FromQuery(Name = "status")] string? status = null,
         [FromQuery(Name = "date")] string? date = null)
     {
+        await UpdateOrderProgressAsync();
+
         IQueryable<WorkOrder> query = db.WorkOrders.AsNoTracking().Include(o => o.Product).Include(o => o.ProductionLine);
 
         if (!string.IsNullOrWhiteSpace(status))
@@ -54,21 +130,60 @@ public sealed class OrdersController(AppDbContext db) : ControllerBase
         return result;
     }
 
-    public sealed record CreateOrderRequest(int ProductId, int Quantity, int? LineId);
+    public sealed class CreateOrderRequest
+    {
+        public int? ProductId { get; init; }
+
+        public string? ProductName { get; init; }
+
+        [JsonPropertyName("product_name")]
+        public string? ProductNameSnake { get; init; }
+
+        public int Quantity { get; init; }
+
+        public int? LineId { get; init; }
+    }
 
     [HttpPost]
-    public async Task<ActionResult<OrderDto>> Create([FromBody] CreateOrderRequest request)
+    [Consumes("application/json")]
+    public async Task<ActionResult<OrderDetailsDto>> Create([FromBody] CreateOrderRequest request)
     {
         if (request.Quantity <= 0)
             return BadRequest("quantity must be > 0");
 
-        var product = await db.Products
+        var productQuery = db.Products
             .Include(p => p.ProductMaterials)
             .ThenInclude(pm => pm.Material)
-            .FirstOrDefaultAsync(p => p.Id == request.ProductId);
+            .AsQueryable();
+
+        Product? product = null;
+        if (request.ProductId is not null && request.ProductId.Value > 0)
+        {
+            product = await productQuery.FirstOrDefaultAsync(p => p.Id == request.ProductId.Value);
+        }
+        else
+        {
+            var name = request.ProductName ?? request.ProductNameSnake;
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                // Поиск по имени делаем в .NET из-за ограничений SQLite lower()/NOCASE для кириллицы.
+                var inputName = name.Trim();
+                var matchedId = await db.Products.AsNoTracking()
+                    .Select(p => new { p.Id, p.Name })
+                    .ToListAsync();
+
+                var id = matchedId
+                    .Where(p => string.Equals(p.Name, inputName, StringComparison.OrdinalIgnoreCase))
+                    .Select(p => (int?)p.Id)
+                    .FirstOrDefault();
+
+                if (id is not null)
+                    product = await productQuery.FirstOrDefaultAsync(p => p.Id == id.Value);
+            }
+        }
 
         if (product is null)
-            return BadRequest("product_id not found");
+            return BadRequest("product not found (send productId or productName)");
 
         ProductionLine? line = null;
         if (request.LineId is not null)
@@ -121,13 +236,22 @@ public sealed class OrdersController(AppDbContext db) : ControllerBase
 
         await db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetDetails), new { id = order.Id }, await BuildDetailsAsync(order.Id));
+        var details = await BuildDetailsAsync(order.Id);
+        if (details is null) return StatusCode(StatusCodes.Status500InternalServerError);
+
+        return CreatedAtAction(nameof(GetDetails), new { id = order.Id }, details);
     }
+
+    [HttpPost]
+    [Consumes("application/x-www-form-urlencoded")]
+    public Task<ActionResult<OrderDetailsDto>> CreateForm([FromForm] CreateOrderRequest request)
+        => Create(request);
 
     public sealed record UpdateProgressRequest(decimal Percent);
 
     [HttpPut("{id:int}/progress")]
-    public async Task<ActionResult<OrderDto>> UpdateProgress(int id, [FromBody] UpdateProgressRequest request)
+    [Consumes("application/json")]
+    public async Task<ActionResult<OrderDetailsDto>> UpdateProgress(int id, [FromBody] UpdateProgressRequest request)
     {
         if (request.Percent < 0 || request.Percent > 100)
             return BadRequest("percent must be 0..100");
@@ -139,6 +263,7 @@ public sealed class OrdersController(AppDbContext db) : ControllerBase
             return BadRequest("order is finished");
 
         order.ProgressPercent = request.Percent;
+        order.ProgressPercent = Math.Round(order.ProgressPercent, 3);
         if (request.Percent == 0 && order.Status == WorkOrderStatus.InProgress)
             order.Status = WorkOrderStatus.Pending;
         if (request.Percent > 0 && order.Status == WorkOrderStatus.Pending)
@@ -152,12 +277,19 @@ public sealed class OrdersController(AppDbContext db) : ControllerBase
 
         await db.SaveChangesAsync();
 
-        return await BuildDetailsAsync(id);
+        var details = await BuildDetailsAsync(id);
+        return details is null ? NotFound() : details;
     }
+
+    [HttpPut("{id:int}/progress")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public Task<ActionResult<OrderDetailsDto>> UpdateProgressForm(int id, [FromForm] UpdateProgressRequest request)
+        => UpdateProgress(id, request);
 
     [HttpGet("{id:int}/details")]
     public async Task<ActionResult<OrderDetailsDto>> GetDetails(int id)
     {
+        await UpdateOrderProgressAsync();
         var order = await BuildDetailsAsync(id);
         return order is null ? NotFound() : order;
     }
@@ -213,4 +345,3 @@ public sealed class OrdersController(AppDbContext db) : ControllerBase
         string Status,
         decimal ProgressPercent);
 }
-

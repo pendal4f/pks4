@@ -125,3 +125,4 @@ C:\Users\User\RiderProjects\pks4\pks4\obj\Debug\net8.0\refint\pks4.dll
 C:\Users\User\RiderProjects\pks4\pks4\obj\Debug\net8.0\pks4.pdb
 C:\Users\User\RiderProjects\pks4\pks4\obj\Debug\net8.0\pks4.genruntimeconfig.cache
 C:\Users\User\RiderProjects\pks4\pks4\obj\Debug\net8.0\ref\pks4.dll
+C:\Users\User\RiderProjects\pks4\pks4\obj\Debug\net8.0\pks4.sourcelink.json
