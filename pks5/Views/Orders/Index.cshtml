@@ -71,7 +71,7 @@
                                          style="width: @o.ProgressPercent%;"
                                          aria-valuenow="@o.ProgressPercent" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
-                                <div class="small text-muted"><span class="order-progress" data-order-id="@o.Id">@o.ProgressPercent</span>%</div>
+                                <div class="small text-muted"><span class="order-progress" data-order-id="@o.Id">@o.ProgressPercent.ToString("0.###")</span>%</div>
                             </td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">

@@ -112,20 +112,36 @@ public sealed class OrdersController(AppDbContext db) : ControllerBase
             query = query.Where(o => o.StartDate >= today && o.StartDate < tomorrow);
         }
 
-        var result = await query
+        var rows = await query
             .OrderByDescending(o => o.Id)
-            .Select(o => new OrderDto(
+            .Select(o => new
+            {
                 o.Id,
                 o.ProductId,
-                o.Product.Name,
+                ProductName = o.Product.Name,
                 o.ProductionLineId,
-                o.ProductionLine != null ? o.ProductionLine.Name : null,
+                ProductionLineName = o.ProductionLine != null ? o.ProductionLine.Name : null,
                 o.Quantity,
                 o.StartDate,
                 o.EstimatedEndDate,
                 o.Status,
-                o.ProgressPercent))
+                o.ProgressPercent
+            })
             .ToListAsync();
+
+        var result = rows
+            .Select(o => new OrderDto(
+                o.Id,
+                o.ProductId,
+                o.ProductName,
+                o.ProductionLineId,
+                o.ProductionLineName,
+                o.Quantity,
+                o.StartDate,
+                o.EstimatedEndDate,
+                o.Status,
+                Math.Round(o.ProgressPercent, 3)))
+            .ToList();
 
         return result;
     }
@@ -316,7 +332,7 @@ public sealed class OrdersController(AppDbContext db) : ControllerBase
             order.StartDate,
             order.EstimatedEndDate,
             order.Status,
-            order.ProgressPercent);
+            Math.Round(order.ProgressPercent, 3));
     }
 
     public sealed record OrderDto(

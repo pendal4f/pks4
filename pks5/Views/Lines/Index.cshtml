@@ -36,7 +36,7 @@
                         <div class="fw-semibold">@((order is null) ? "—" : $"{order.Product.Name} (#{order.Id})")</div>
                         @if (order is not null)
                         {
-                            <div class="small text-muted">Прогресс: @order.ProgressPercent%</div>
+                            <div class="small text-muted">Прогресс: @order.ProgressPercent.ToString("0.###")%</div>
                         }
                     </div>
 
